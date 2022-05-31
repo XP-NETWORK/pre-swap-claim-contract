@@ -13,15 +13,14 @@ contract Claim is Ownable {
        token = ERC20(_address);
     }
 
-    function deposit(uint256 _amount) external {
-        require(token.balanceOf(msg.sender) >= _amount , "You do not have the amount");
-        deposits[msg.sender] += _amount;
+    function deposit(uint256 _amount , address _address) external onlyOwner {
+        deposits[_address] += _amount;
     }
 
     function claim() external {
         require(deposits[msg.sender] > 0 , "There are no funds");
         token.transfer(msg.sender , deposits[msg.sender]);
-        delete deposits[msg.sender];
+        deposits[msg.sender] = 0;
     }
 
     function withdraw(uint256 _totalAmount) external onlyOwner {
