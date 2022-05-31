@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Claim is Ownable {
 
- uint256 public totalAmount;
  mapping(address => uint256) public deposits;
  ERC20 public token;
 
@@ -17,17 +16,15 @@ contract Claim is Ownable {
     function deposit(uint256 _amount) external {
         require(token.balanceOf(msg.sender) >= _amount , "You do not have the amount");
         deposits[msg.sender] += _amount;
-        totalAmount += _amount;
     }
 
     function claim() external {
         require(deposits[msg.sender] > 0 , "There are no funds");
-        totalAmount -= deposits[msg.sender];
         token.transfer(msg.sender , deposits[msg.sender]);
         delete deposits[msg.sender];
     }
 
-    function withdraw() external onlyOwner {
-      token.transfer( msg.sender , totalAmount);
+    function withdraw(uint256 _totalAmount) external onlyOwner {
+      token.transfer( msg.sender , _totalAmount);
     }
 }
